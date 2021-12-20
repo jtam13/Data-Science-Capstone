@@ -58,14 +58,13 @@ def get_pie_chart(entered_site):
     df = spacex_df
     title_pie = f"Total Successful Launches for {entered_site}"
     if entered_site == 'ALL':
-            filtered_df = df.groupby('Launch Site')['class'].sum().reset_index()
-            fig = px.pie(data=filtered_df, values='class', names='Launch Site', title=title_pie)
+            fig = px.pie(spacex_df, values='class', names='Launch Site', title=title_pie)
             return fig
     else:
         filtered_df = df[df['Launch Site'] == entered_site]
-        site_df = filtered_df.groupby('Launch Site', 'class').size().reset_index()
+        site_df = filtered_df.groupby(['Launch Site', 'class']).size().reset_index(name='class count)
         site_df = site_df.rename(columns={0: 'class count'})
-        fig = px.pie(data=site_df, values='class count', names='class', title=title_pie)
+        fig = px.pie(site_df, values='class count', names='class', title=title_pie)
         return fig
 
 # TASK 4:
@@ -79,11 +78,11 @@ def get_scatter(site, payload):
     mass_df = spacex_df[spacex_df['Payload Mass (kg)'].between(low, high)]
     title_scatter = f'Total Launch Successes on Payload Mass for {site}'
     if site == 'ALL':
-        fig = px.scatter(data=mass_df, x='Payload Mass (kg)', y='class', color='Booster Version Category', title=title_scatter)
+        fig = px.scatter(mass_df, x='Payload Mass (kg)', y='class', color='Booster Version Category', title=title_scatter)
         return fig
     else:
         filter_mass = mass_df[mass_df['Launch Site'] == site]
-        fig = px.scatter(data=filter_mass, x='Payload Mass (kg)', y='class', color='Booster Version Category', title=title_scatter)
+        fig = px.scatter(filter_mass, x='Payload Mass (kg)', y='class', color='Booster Version Category', title=title_scatter)
         return fig 
 
 # Run the app
